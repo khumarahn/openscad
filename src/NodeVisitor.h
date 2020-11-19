@@ -17,6 +17,7 @@ class NodeVisitor :
 	public Visitor<class CsgOpNode>,
 	public Visitor<class LinearExtrudeNode>,
 	public Visitor<class RotateExtrudeNode>,
+	public Visitor<class RoofNode>,
 	public Visitor<class ImportNode>,
 	public Visitor<class PrimitiveNode>,
 	public Visitor<class TextNode>,
@@ -65,6 +66,9 @@ public:
   Response visit(class State &state, const class RotateExtrudeNode &node) override {
 		return visit(state, (const class AbstractPolyNode &)node);
 	}
+  Response visit(class State &state, const class RoofNode &node) override {
+		return visit(state, (const class AbstractPolyNode &)node);
+	}
   Response visit(class State &state, const class ImportNode &node) override {
 		return visit(state, (const class LeafNode &)node);
 	}
@@ -89,7 +93,7 @@ public:
   Response visit(class State &state, const class ColorNode &node) override {
 		return visit(state, (const class AbstractNode &)node);
 	}
-  Response visit(class State &state, const class OffsetNode &node) override {
+	Response visit(class State &state, const class OffsetNode &node) override {
 		return visit(state, (const class AbstractPolyNode &)node);
 	}
 	// Add visit() methods for new visitable subtypes of AbstractNode here
