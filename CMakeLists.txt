@@ -496,7 +496,7 @@ set(CORE_SOURCES
   src/rendersettings.cc
   src/roof.cc
   src/rotateextrude.cc
-  src/skeleton.cc
+  src/ssroof.cc
   src/stackcheck.h
   src/surface.cc
   src/svg.cc
