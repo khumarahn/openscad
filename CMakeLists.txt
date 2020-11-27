@@ -503,6 +503,7 @@ set(CORE_SOURCES
   src/text.cc
   src/transform.cc
   src/value.cc
+  src/vdroof.cc
   src/version.cc
   src/Assignment.cc
   src/AST.cc
