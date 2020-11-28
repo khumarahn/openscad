@@ -1395,7 +1395,7 @@ static Geometry *roofOverPolygon(const RoofNode &node, const Polygon2d &poly)
 	} else if (node.method == "straight skeleton") {
 		roof = roof_ss::straight_skeleton_roof(poly);
 	} else {
-		assert(node.method == "AINT NOBODY HAVE TIME FOR THAT");
+		assert(false && "Invalid roof method");
 	}
 	return roof;
 }
