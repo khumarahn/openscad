@@ -505,6 +505,8 @@ set(CORE_SOURCES
   src/transform.cc
   src/value.cc
   src/version.cc
+  src/warp.cc
+  src/warpmodule.cc
   src/Assignment.cc
   src/AST.cc
   src/Camera.cc

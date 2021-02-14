@@ -12,6 +12,8 @@
 #include "roofnode.h"
 #include "roof_ss.h"
 #include "roof_vd.h"
+#include "warpnode.h"
+#include "warp.h"
 #include "rotateextrudenode.h"
 #include "csgnode.h"
 #include "cgaladvnode.h"
@@ -1426,6 +1428,41 @@ Response GeometryEvaluator::visit(State &state, const RoofNode &node)
 			geom = smartCacheGet(node, false);
 		}
 		addToParent(state, node, geom);
+	}
+	return Response::ContinueTraversal;
+}
+
+Response GeometryEvaluator::visit(State &state, const WarpNode &node)
+{
+	if (state.isPrefix() && isSmartCached(node)) return Response::PruneTraversal;
+	if (state.isPostfix()) {
+		shared_ptr<const class Geometry> geom;
+		if (!isSmartCached(node)) {
+			// First union all children
+			ResultObject res = applyToChildren(node, OpenSCADOperator::UNION);
+			if ((geom = res.constptr())) {
+				if (geom->getDimension() == 2) {
+					LOG(message_group::Warning,node.modinst->location(),this->tree.getDocumentPath(),"Warp: dimension 2 is not supported!");
+				}
+				else if (geom->getDimension() == 3) {
+					shared_ptr<const PolySet> ps = dynamic_pointer_cast<const PolySet>(geom);
+					PolySet pss(3);
+					if (ps) {
+						pss = *ps;
+					} else  { // cgal nef polyhedron ?
+						shared_ptr<const CGAL_Nef_polyhedron> N = dynamic_pointer_cast<const CGAL_Nef_polyhedron>(geom);
+						assert(N);
+						CGALUtils::createPolySetFromNefPolyhedron3(*N->p3, pss);
+					}
+					shared_ptr<PolySet> newps = warp_ns::warp(pss, node.grid_x, node.grid_y, node.grid_z, node.R, node.r);
+					geom = newps;
+				}
+			}
+		} else {
+			geom = smartCacheGet(node, state.preferNef());
+		}
+		addToParent(state, node, geom);
+		node.progress_report();
 	}
 	return Response::ContinueTraversal;
 }
